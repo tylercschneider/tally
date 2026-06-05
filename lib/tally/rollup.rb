@@ -28,7 +28,7 @@ module Tally
       bucket = bucket(extract(fact, time), grain)
       return bucket if by.empty?
 
-      [ bucket, *by.map { |dimension| fact.public_send(dimension) } ]
+      [ bucket, *by.map { |dimension| extract(fact, dimension) } ]
     end
 
     def self.extract(fact, accessor)
