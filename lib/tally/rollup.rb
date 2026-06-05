@@ -16,7 +16,7 @@ module Tally
 
     def self.sum(facts, field, grain:, time:, by: [])
       grouped(facts, grain, time, by).transform_values do |group|
-        group.sum { |fact| fact.public_send(field) }
+        group.sum { |fact| extract(fact, field) }
       end
     end
 
@@ -25,10 +25,14 @@ module Tally
     end
 
     def self.key(fact, grain, time, by)
-      bucket = bucket(fact.public_send(time), grain)
+      bucket = bucket(extract(fact, time), grain)
       return bucket if by.empty?
 
-      [ bucket, *by.map { |dimension| fact.public_send(dimension) } ]
+      [ bucket, *by.map { |dimension| extract(fact, dimension) } ]
+    end
+
+    def self.extract(fact, accessor)
+      accessor.respond_to?(:call) ? accessor.call(fact) : fact.public_send(accessor)
     end
 
     def self.bucket(moment, grain)
