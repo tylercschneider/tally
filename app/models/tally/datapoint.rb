@@ -4,6 +4,8 @@ module Tally
   class Datapoint < ApplicationRecord
     self.table_name = "tally_datapoints"
 
+    scope :in_period, ->(range) { where(period_start: range) }
+
     before_validation :assign_dimensions_key
 
     # A canonical, order-independent string for a dimensions hash, used to match

@@ -1,0 +1,14 @@
+require "test_helper"
+
+module Tally
+  class DatapointTest < ActiveSupport::TestCase
+    test "in_period returns only datapoints whose period_start falls in the range" do
+      inside = Datapoint.create!(measure: "leads", grain: "day", period_start: Time.utc(2026, 6, 10), value: 5, dimensions: {})
+      Datapoint.create!(measure: "leads", grain: "day", period_start: Time.utc(2026, 5, 31), value: 3, dimensions: {})
+
+      result = Datapoint.in_period(Time.utc(2026, 6, 1)..Time.utc(2026, 6, 30))
+
+      assert_equal [ inside ], result.to_a
+    end
+  end
+end
