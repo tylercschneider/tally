@@ -29,7 +29,14 @@ Tally::Rollup.count(facts, grain: :day, time: :occurred_at)
 Tally::Rollup.sum(facts, :amount, grain: :day, time: :occurred_at, by: [:channel])
 ```
 
-Next: a measure registry, persisted rollup tables, and idempotent recompute.
+Declare named **measures** once and compute by name:
+
+```ruby
+Tally.register_measure(:revenue, aggregation: :sum, field: :amount)
+Tally::Rollup.compute(facts, measure: :revenue, grain: :day, time: :occurred_at)
+```
+
+Next: persisted rollup tables and idempotent recompute.
 
 ## License
 

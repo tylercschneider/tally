@@ -1,5 +1,15 @@
 module Tally
   module Rollup
+    def self.compute(facts, measure:, grain:, time:, by: [])
+      definition = Tally.measure(measure)
+
+      case definition.aggregation
+      when :count then count(facts, grain: grain, time: time, by: by)
+      when :sum then sum(facts, definition.field, grain: grain, time: time, by: by)
+      else raise ArgumentError, "Unknown aggregation: #{definition.aggregation.inspect}"
+      end
+    end
+
     def self.count(facts, grain:, time:, by: [])
       grouped(facts, grain, time, by).transform_values(&:size)
     end
