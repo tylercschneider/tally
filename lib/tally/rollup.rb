@@ -16,7 +16,7 @@ module Tally
 
     def self.sum(facts, field, grain:, time:, by: [])
       grouped(facts, grain, time, by).transform_values do |group|
-        group.sum { |fact| fact.public_send(field) }
+        group.sum { |fact| extract(fact, field) }
       end
     end
 

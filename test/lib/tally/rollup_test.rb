@@ -67,5 +67,21 @@ module Tally
         result
       )
     end
+
+    test "sums a measure field via a callable" do
+      facts = [
+        { at: Time.utc(2026, 6, 1, 10), payload: { "amount" => 100 } },
+        { at: Time.utc(2026, 6, 1, 15), payload: { "amount" => 50 } }
+      ]
+
+      result = Rollup.sum(
+        facts,
+        ->(fact) { fact[:payload]["amount"] },
+        grain: :day,
+        time: ->(fact) { fact[:at] }
+      )
+
+      assert_equal({ Time.utc(2026, 6, 1) => 150 }, result)
+    end
   end
 end
