@@ -19,5 +19,13 @@ module Tally
 
       assert_equal 150, Datapoint.sole.value
     end
+
+    test "stamps recomputed_at" do
+      Tally.register_measure(:orders, aggregation: :count)
+
+      Tally.recompute(:orders, [ Fact.new(occurred_at: Time.utc(2026, 6, 1, 10)) ], grain: :day, time: :occurred_at)
+
+      assert_not_nil Datapoint.sole.recomputed_at
+    end
   end
 end

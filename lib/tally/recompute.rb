@@ -11,7 +11,7 @@ module Tally
           period_start: period_start,
           dimensions: dimensions
         )
-        datapoint.update!(value: value)
+        datapoint.update!(value: value, recomputed_at: Time.current)
       end
     end
 
