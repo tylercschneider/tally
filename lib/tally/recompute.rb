@@ -9,9 +9,9 @@ module Tally
           measure: measure_name.to_s,
           grain: grain.to_s,
           period_start: period_start,
-          dimensions: dimensions
+          dimensions_key: Datapoint.dimensions_key_for(dimensions)
         )
-        datapoint.update!(value: value, recomputed_at: Time.current)
+        datapoint.update!(dimensions: dimensions, value: value, recomputed_at: Time.current)
       end
     end
 

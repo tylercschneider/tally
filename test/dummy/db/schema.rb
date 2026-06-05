@@ -10,16 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_05_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_05_160001) do
   create_table "tally_datapoints", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.json "dimensions", default: {}, null: false
+    t.string "dimensions_key", default: "", null: false
     t.string "grain", null: false
     t.string "measure", null: false
     t.datetime "period_start", null: false
     t.datetime "recomputed_at"
     t.datetime "updated_at", null: false
     t.decimal "value", null: false
-    t.index ["measure", "grain", "period_start"], name: "index_tally_datapoints_on_measure_grain_period"
+    t.index ["measure", "grain", "period_start", "dimensions_key"], name: "index_tally_datapoints_unique", unique: true
   end
 end
