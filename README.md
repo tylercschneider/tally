@@ -36,7 +36,15 @@ Tally.register_measure(:revenue, aggregation: :sum, field: :amount)
 Tally::Rollup.compute(facts, measure: :revenue, grain: :day, time: :occurred_at)
 ```
 
-Next: persisted rollup tables and idempotent recompute.
+Persist rollups idempotently into the `tally_datapoints` table:
+
+```ruby
+Tally.recompute(:revenue, facts, grain: :day, time: :occurred_at, by: [:channel])
+# upserts one Tally::Datapoint per (measure, grain, period_start, dimensions);
+# re-running updates values in place — no duplicates.
+```
+
+Next: a recompute job + window scoping, then sketches/cohorts.
 
 ## License
 
