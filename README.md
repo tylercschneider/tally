@@ -44,6 +44,19 @@ Tally.recompute(:revenue, facts, grain: :day, time: :occurred_at, by: [:channel]
 # re-running updates values in place — no duplicates.
 ```
 
+`time`, `field`, and dimensions accept a **method symbol or a callable**, so facts
+with nested data roll up without a wrapper — e.g. an event's JSON `payload`:
+
+```ruby
+Tally.recompute(:revenue, stored_events,
+  grain: :day,
+  time:  :occurred_at,
+  field: ->(e) { e.payload["amount"] },
+  by:    [ ->(e) { e.payload["channel"] } ])
+```
+
+This is what lets `event_engine-store` events feed `tally` without coupling the two.
+
 Next: a recompute job + window scoping, then sketches/cohorts.
 
 ## License
