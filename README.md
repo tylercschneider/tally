@@ -21,7 +21,15 @@ $ bundle
 
 ## Status
 
-Early development — building the measure registry and the first rollup.
+Early development. The first rollup works — `Tally::Rollup.count` / `.sum` aggregate
+facts by **time grain** and optional **dimensions**:
+
+```ruby
+Tally::Rollup.count(facts, grain: :day, time: :occurred_at)
+Tally::Rollup.sum(facts, :amount, grain: :day, time: :occurred_at, by: [:channel])
+```
+
+Next: a measure registry, persisted rollup tables, and idempotent recompute.
 
 ## License
 
