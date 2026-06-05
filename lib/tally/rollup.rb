@@ -25,10 +25,14 @@ module Tally
     end
 
     def self.key(fact, grain, time, by)
-      bucket = bucket(fact.public_send(time), grain)
+      bucket = bucket(extract(fact, time), grain)
       return bucket if by.empty?
 
       [ bucket, *by.map { |dimension| fact.public_send(dimension) } ]
+    end
+
+    def self.extract(fact, accessor)
+      accessor.respond_to?(:call) ? accessor.call(fact) : fact.public_send(accessor)
     end
 
     def self.bucket(moment, grain)

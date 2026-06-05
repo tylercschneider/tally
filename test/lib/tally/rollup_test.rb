@@ -40,5 +40,13 @@ module Tally
         result
       )
     end
+
+    test "extracts the bucketing time via a callable" do
+      facts = [ { at: Time.utc(2026, 6, 1, 10) }, { at: Time.utc(2026, 6, 1, 15) } ]
+
+      result = Rollup.count(facts, grain: :day, time: ->(fact) { fact[:at] })
+
+      assert_equal({ Time.utc(2026, 6, 1) => 2 }, result)
+    end
   end
 end
