@@ -36,5 +36,17 @@ module Tally
 
       assert_equal 1, Datapoint.count
     end
+
+    test "upserts one datapoint per dimension value without duplicating" do
+      Tally.register_measure(:orders, aggregation: :count)
+      facts = [
+        Fact.new(occurred_at: Time.utc(2026, 6, 1, 10), channel: "web"),
+        Fact.new(occurred_at: Time.utc(2026, 6, 1, 11), channel: "app")
+      ]
+
+      2.times { Tally.recompute(:orders, facts, grain: :day, time: :occurred_at, by: [ :channel ]) }
+
+      assert_equal 2, Datapoint.count
+    end
   end
 end
